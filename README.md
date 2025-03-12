@@ -5,6 +5,7 @@ Ce projet permet d'implémenter l'authentification JWT pour le widget Zendesk Me
 ## Installation
 
 1. Ouvrez votre thème Zendesk Guide et accédez à l'éditeur de code
+   1. https://support.zendesk.com/hc/en-us/articles/4408832558874-Editing-the-code-for-your-live-help-center-theme
 2. Localisez le fichier `document_head.hdbs`
 3. Ajoutez le code suivant à la fin du fichier :
 
