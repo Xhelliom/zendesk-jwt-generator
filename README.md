@@ -33,20 +33,28 @@ Ce projet permet d'implémenter l'authentification JWT pour le widget Zendesk Me
     url: 'https://your.server.endpoint', // Remplacez par l'URL de votre worker
     data: JSON.stringify({
       "external_id": user.user.id,
-      "user_email": user.user.email, 
-      "user_name": user.user.name
+      "email": user.user.email, 
+      "name": user.user.name
     }),
+    contentType: 'application/json',
     dataType: 'text',
     async: false,
     success: function (json) {
       jwttoken = json;
     }
   });
-  console.log(jwttoken);
 
   // Authentification de la messagerie
+  console.log("Tentative d'authentification du messenger...");
   zE('messenger', 'loginUser', function (callback) {
+    console.log("Callback d'authentification appelé");
     callback(jwttoken);
+    console.log("Token JWT envoyé au messenger");
+  });
+
+  // Vérification du statut après authentification
+  zE('messenger:get', 'connection', function(connection) {
+    console.log('Statut de connexion du messenger:', connection.status);
   });
 </script>
 {{else}}
