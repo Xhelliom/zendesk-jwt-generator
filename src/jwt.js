@@ -1,18 +1,11 @@
 import crypto from "crypto";
 
 export async function generateJWT({ name, email, external_id }) {
-  console.log("Début de la génération du JWT pour:", {
-    name,
-    email,
-    external_id,
-  });
-
   const app_id = process.env.MESSAGING_APP_ID;
   const secret = process.env.MESSAGING_SECRET;
 
   console.log("Variables disponibles dans le service :", {
     MESSAGING_APP_ID: app_id,
-    MESSAGING_SECRET: secret ? "****" : undefined, // On masque le secret pour la sécurité
   });
 
   if (!app_id || !secret) {
@@ -22,7 +15,6 @@ export async function generateJWT({ name, email, external_id }) {
     );
   }
 
-  console.log("Création de la clé HMAC...");
   const key = await crypto.subtle.importKey(
     "raw",
     utf8ToUint8Array(secret),
@@ -31,7 +23,6 @@ export async function generateJWT({ name, email, external_id }) {
     ["sign"]
   );
 
-  console.log("Préparation du header et du payload...");
   const header = JSON.stringify({
     alg: "HS256",
     typ: "JWT",
@@ -43,11 +34,10 @@ export async function generateJWT({ name, email, external_id }) {
     name: name,
     email: email,
     exp: Math.floor(new Date().getTime() / 1000.0) + 86400,
-    external_id: external_id,
+    external_id: String(external_id),
     email_verified: true,
   });
 
-  console.log("Génération de la signature...");
   const partialToken = `${base64URLStringify(
     utf8ToUint8Array(header)
   )}.${base64URLStringify(utf8ToUint8Array(payload))}`;
@@ -61,7 +51,7 @@ export async function generateJWT({ name, email, external_id }) {
   const finalToken = `${partialToken}.${base64URLStringify(
     new Uint8Array(signature)
   )}`;
-  console.log("JWT généré avec succès");
+
   return finalToken;
 }
 
