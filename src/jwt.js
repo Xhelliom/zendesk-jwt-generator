@@ -4,10 +4,6 @@ export async function generateJWT({ name, email, external_id }) {
   const app_id = process.env.MESSAGING_APP_ID;
   const secret = process.env.MESSAGING_SECRET;
 
-  console.log("Variables disponibles dans le service :", {
-    MESSAGING_APP_ID: app_id,
-  });
-
   if (!app_id || !secret) {
     console.error("Erreur: Variables d'environnement manquantes");
     throw new Error(

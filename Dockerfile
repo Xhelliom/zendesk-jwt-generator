@@ -25,6 +25,6 @@ CMD [ "sh", "-c", "if [ -z \"$MESSAGING_SECRET\" ] || [ -z \"$MESSAGING_APP_ID\"
     else \
     echo 'Variables trouvées:'; \
     echo \"MESSAGING_APP_ID=${MESSAGING_APP_ID}\"; \
-    echo \"MESSAGING_SECRET=${MESSAGING_SECRET}\"; \
+    echo \"MESSAGING_SECRET=****"; \
     npm start; \
     fi" ] 
