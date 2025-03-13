@@ -1,0 +1,65 @@
+{{#if signed_in}}
+<script type="text/javascript">
+    console.log("Utilisateur connecté");
+
+    // Récupération des informations de l'utilisateur courant
+    var user = [];
+    $.ajax({
+        url: '/api/v2/users/me',
+        async: false,
+        dataType: 'json',
+        success: function (json) {
+            user = json;
+        }
+    });
+
+    // Obtention du token pour l'utilisateur courant
+    var jwttoken = '';
+    $.ajax({
+        type: "POST",
+        url: 'https://your.server.endpoint', // Remplacez par l'URL de votre worker
+        data: JSON.stringify({
+            "external_id": user.user.id,
+            "email": user.user.email,
+            "name": user.user.name
+        }),
+        contentType: 'application/json',
+        dataType: 'text',
+        async: false,
+        success: function (json) {
+            jwttoken = String(json).trim(); // Conversion explicite en string et suppression des espaces
+        }
+    });
+
+    // Authentification de la messagerie
+    console.log("Tentative d'authentification du messenger...");
+    zE('messenger', 'loginUser',
+        // JWT Callback
+        function (callback) {
+            callback(String(jwttoken));
+        },
+        // Login Callback pour la gestion des erreurs
+        function (error) {
+            if (error) {
+                console.error('Erreur de connexion:', {
+                    type: error.type,
+                    reason: error.reason,
+                    message: error.message
+                });
+            } else {
+                console.log("Authentification réussie");
+            }
+        }
+    );
+
+    // Vérification du statut après authentification
+    zE('messenger:get', 'connection', function (connection) {
+        console.log('Statut de connexion du messenger:', connection.status);
+    });
+</script>
+{{else}}
+<script>
+    console.log("Utilisateur déconnecté");
+    zE('messenger', 'logoutUser');
+</script>
+{{/if}}
