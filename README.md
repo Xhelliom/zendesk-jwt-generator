@@ -1,97 +1,97 @@
-# Générateur JWT pour Zendesk
+# JWT Generator for Zendesk
 
-Ce projet permet d'implémenter l'authentification JWT pour le widget Zendesk Messaging dans votre Centre d'Aide. Il a été inspiré par les travaux de [Thomas Verschoren](https://internalnote.com/jwt-messaging) et son dépôt [zendesk_widget](https://github.com/verschoren/zendesk_widget).
+This project enables JWT authentication implementation for the Zendesk Messaging widget in your Help Center. It was inspired by the work of [Thomas Verschoren](https://internalnote.com/jwt-messaging) and his repository [zendesk_widget](https://github.com/verschoren/zendesk_widget).
 
-## Prérequis
+## Prerequisites
 
-- Un compte Zendesk avec accès au Centre d'Aide
-- Les identifiants de votre application Zendesk Messaging :
+- A Zendesk account with Help Center access
+- Your Zendesk Messaging application credentials:
   - MESSAGING_APP_ID
   - MESSAGING_SECRET
 
 ## Installation
 
-1. Ouvrez votre thème Zendesk Guide et accédez à l'éditeur de code
+1. Open your Zendesk Guide theme and access the code editor
    1. https://support.zendesk.com/hc/en-us/articles/4408832558874-Editing-the-code-for-your-live-help-center-theme
-2. Localisez le fichier `document_head.hdbs`
-3. Copiez le contenu du fichier `src/zendesk-widget.html` et collez-le à la fin de votre fichier `document_head.hdbs`
+2. Locate the `document_head.hdbs` file
+3. Copy the contents of `src/zendesk-widget.html` and paste it at the end of your `document_head.hdbs` file
 
 ## Configuration
 
-### Variables d'environnement
+### Environment Variables
 
-Le service nécessite deux variables d'environnement :
+The service requires two environment variables:
 
 ```bash
-MESSAGING_APP_ID=votre_app_id
-MESSAGING_SECRET=votre_secret
+MESSAGING_APP_ID=your_app_id
+MESSAGING_SECRET=your_secret
 ```
 
-### Déploiement avec Docker
+### Docker Deployment
 
-1. Construire l'image :
+1. Build the image:
 ```bash
 docker build -t zendesk-jwt .
 ```
 
-2. Lancer le container :
+2. Run the container:
 ```bash
-docker run -e MESSAGING_SECRET=votre_secret -e MESSAGING_APP_ID=votre_app_id -p 3000:3000 zendesk-jwt
+docker run -e MESSAGING_SECRET=your_secret -e MESSAGING_APP_ID=your_app_id -p 3000:3000 zendesk-jwt
 ```
 
-### Configuration du widget
+### Widget Configuration
 
-Dans le fichier `src/zendesk-widget.html`, remplacez :
+In the `src/zendesk-widget.html` file, replace:
 ```javascript
 url: 'https://your.server.endpoint'
 ```
-par l'URL de votre service déployé.
+with your deployed service URL.
 
-## Fonctionnement
+## How It Works
 
-Une fois installé, le widget s'authentifiera automatiquement lorsqu'un utilisateur se connecte à votre Centre d'Aide. Le système :
+Once installed, the widget will automatically authenticate when a user logs into your Help Center. The system:
 
-1. Détecte si l'utilisateur est connecté
-2. Récupère les informations de l'utilisateur via l'API Zendesk
-3. Génère un token JWT via votre endpoint
-4. Authentifie le widget de messagerie avec le token généré
+1. Detects if the user is logged in
+2. Retrieves user information via the Zendesk API
+3. Generates a JWT token via your endpoint
+4. Authenticates the messaging widget with the generated token
 
-### Structure du JWT
+### JWT Structure
 
-Le token généré contient :
+The generated token contains:
 ```json
 {
     "alg": "HS256",
     "typ": "JWT",
-    "kid": "votre_app_id"
+    "kid": "your_app_id"
 }
 {
     "scope": "user",
-    "name": "nom_utilisateur",
-    "email": "email@utilisateur.com",
-    "exp": timestamp_expiration,
-    "external_id": "id_utilisateur",
+    "name": "user_name",
+    "email": "user@email.com",
+    "exp": expiration_timestamp,
+    "external_id": "user_id",
     "email_verified": true
 }
 ```
 
-## Sécurité
+## Security
 
-- Les variables d'environnement sensibles ne sont jamais stockées dans l'image Docker
-- Le secret n'est jamais affiché dans les logs
-- Les tokens JWT expirent après 24 heures
-- L'authentification est requise pour accéder au service
+- Sensitive environment variables are never stored in the Docker image
+- The secret is never displayed in logs
+- JWT tokens expire after 24 hours
+- Authentication is required to access the service
 
 ## Support
 
-Pour toute question ou problème, veuillez ouvrir une issue dans ce dépôt.
+For any questions or issues, please open an issue in this repository.
 
-## Licence
+## License
 
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-## Crédits
+## Credits
 
-Ce projet a été inspiré par :
-- [Authenticate Zendesk Messaging](https://internalnote.com/jwt-messaging) par Thomas Verschoren
-- [zendesk_widget](https://github.com/verschoren/zendesk_widget) par Thomas Verschoren
+This project was inspired by:
+- [Authenticate Zendesk Messaging](https://internalnote.com/jwt-messaging) by Thomas Verschoren
+- [zendesk_widget](https://github.com/verschoren/zendesk_widget) by Thomas Verschoren
